@@ -10,7 +10,7 @@ const slides = [
   {
     id: 1,
     img: hero1,
-    pan: 'pan-left-right',
+    pan: 'pan-face-to-hair',
     eyebrow: 'New Arrivals — Spring Collection',
     headline: ['The Art of', 'Natural Hair'],
     sub: 'Handcrafted from 100% virgin human hair. Invisible HD lace. Glueless installation in under 10 minutes.',

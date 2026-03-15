@@ -26,20 +26,22 @@
   max-width: 280px; margin-bottom: 28px;
 }
 
-.footer-socials { display: flex; gap: 12px; margin-bottom: 28px; }
+.footer-socials { display: flex; gap: 10px; margin-bottom: 28px; }
 .footer-social {
-  width: 36px; height: 36px;
-  border: 1px solid rgba(201,169,110,0.15);
+  width: 38px; height: 38px;
+  border: 1px solid rgba(201,169,110,0.2);
+  border-radius: 4px;
   display: flex; align-items: center; justify-content: center;
-  color: rgba(250,250,248,0.35);
+  color: rgba(250,250,248,0.4);
   text-decoration: none;
-  font-size: 9px; letter-spacing: 0.5px; font-weight: 500;
-  transition: border-color 0.3s, color 0.3s;
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
 }
 .footer-social:hover {
   border-color: var(--champagne);
   color: var(--champagne);
+  background: rgba(201,169,110,0.06);
 }
+.footer-social svg { display: block; }
 
 .footer-trust-badges { display: flex; flex-direction: column; gap: 8px; }
 .footer-badge {

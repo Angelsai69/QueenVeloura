@@ -89,25 +89,127 @@ export default function CheckoutModal({ isOpen, onClose, cartItems = [], onSucce
     } catch(e) {}
   };
 
-  const handlePayment = (method) => {
+  const handlePayment = async (method) => {
     if (!validate()) return;
-    saveCustomer();
+    saveCustomer(); // localStorage autofill cache
     setStep(2);
+
+    // ── STEP 1: Build full customer + order payload ───────────
+    const orderId = 'VL-' + Date.now();
+    const customerData = {
+      // Contact
+      firstName:      fields.firstName,
+      lastName:       fields.lastName,
+      email:          fields.email,
+      phone:          fields.phone,
+      // Shipping address
+      address: {
+        line1:   fields.address1,
+        line2:   fields.address2,
+        city:    fields.city,
+        state:   fields.state,
+        zip:     fields.zip,
+        country: fields.country,
+      },
+      // CRM / personalisation data
+      preferences: {
+        length:  fields.prefLength,
+        texture: fields.prefTexture,
+      },
+      newsletterOptIn: fields.newsOptIn,
+      // Order metadata
+      orderId,
+      orderTotal:    grandTotal,
+      bundleAdded,
+      items: cartItems,
+      paymentMethod: method,
+      timestamp:     new Date().toISOString(),
+      source:        'checkout_form',
+    };
+
+    // ── STEP 2: POST customer data to your backend BEFORE payment ──
+    //
+    // This stores the lead/customer in your DB even if payment is abandoned.
+    // Uncomment when your backend is connected:
+    //
+    // try {
+    //   // Upsert customer record (for CRM, email lists, analytics)
+    //   await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/customers`, {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(customerData),
+    //   });
+    //
+    //   // Create a pending order record
+    //   await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/orders`, {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ orderId, customer: customerData, items: cartItems, status: 'pending' }),
+    //   });
+    //
+    //   // Add to newsletter if opted in
+    //   if (fields.newsOptIn) {
+    //     await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/email/subscribe`, {
+    //       method: 'POST',
+    //       headers: { 'Content-Type': 'application/json' },
+    //       body: JSON.stringify({ email: fields.email, firstName: fields.firstName, source: 'checkout' }),
+    //     });
+    //   }
+    // } catch (e) {
+    //   console.error('Customer data save error:', e);
+    //   // Don't block payment even if DB save fails
+    // }
+
+    // ── STEP 3: Redirect to Stripe or PayPal ─────────────────
+    //
+    // STRIPE — replace simulation with:
+    // if (method === 'stripe') {
+    //   const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/checkout/stripe`, {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({
+    //       customer: customerData,
+    //       items: cartItems,
+    //       metadata: { orderId, source: 'queenveloura_web' },
+    //     }),
+    //   });
+    //   const { url } = await res.json();
+    //   window.location.href = url; // → Stripe Checkout hosted page
+    //   return;
+    // }
+    //
+    // PAYPAL — replace simulation with:
+    // if (method === 'paypal') {
+    //   const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/checkout/paypal`, {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ customer: customerData, items: cartItems }),
+    //   });
+    //   const { approvalUrl } = await res.json();
+    //   window.location.href = approvalUrl; // → PayPal approval page
+    //   return;
+    // }
+    //
+    // ── STEP 4: Post-payment webhook (server-side) ────────────
+    // On Stripe webhook stripe.checkout.session.completed:
+    //   → POST /api/orders/confirm   { orderId, stripeSessionId }
+    //   → POST /api/email/order-confirmation  { customer, orderId, items }
+    //   → POST /api/loyalty/credit   { customerId, orderId, points: Math.floor(orderTotal) }
+    //   → POST /api/klaviyo/purchase-event    { email, items, total }
+    // ─────────────────────────────────────────────────────────
+
+    // ── SIMULATION (remove when backend is connected) ─────────
     if (method === 'stripe') {
       setStripeLoading(true);
-      setTimeout(() => {
-        setStripeLoading(false);
-        setStep(3);
-        finishOrder();
-      }, 2400);
+      await new Promise(r => setTimeout(r, 2400));
+      setStripeLoading(false);
     } else {
       setPaypalLoading(true);
-      setTimeout(() => {
-        setPaypalLoading(false);
-        setStep(3);
-        finishOrder();
-      }, 2400);
+      await new Promise(r => setTimeout(r, 2400));
+      setPaypalLoading(false);
     }
+    setStep(3);
+    finishOrder();
   };
 
   const finishOrder = () => {

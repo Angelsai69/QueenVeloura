@@ -27,8 +27,16 @@ export default function ExitPopup() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const submit = () => {
-    if (email.includes('@')) { setSubmitted(true); }
+  const submit = async () => {
+    if (!email.includes('@')) return;
+    // ── BACKEND HOOKUP POINT ─────────────────────────────────
+    // await fetch('/api/email/subscribe', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ email: email.trim(), source: 'exit_popup', discountCode: 'VELOURA15' }),
+    // });
+    // ─────────────────────────────────────────────────────────
+    setSubmitted(true);
   };
 
   if (!visible) return null;

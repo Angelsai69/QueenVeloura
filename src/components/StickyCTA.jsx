@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { products } from '../data/siteData';
 import './StickyCTA.css';
 
-export default function StickyCTA({ onAddToCart, onCartOpen }) {
+export default function StickyCTA({ onAddToCart }) {
   const [visible, setVisible] = useState(false);
+  const product = products[0]; // Always shows the first product (Bone Straight)
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 600);
@@ -13,8 +15,10 @@ export default function StickyCTA({ onAddToCart, onCartOpen }) {
   return (
     <div className={`sticky-cta ${visible ? 'visible' : ''}`}>
       <div className="sticky-product-info">
-        <div className="sticky-name">Silk Crown 24" Body Wave</div>
-        <div className="sticky-price">$420 · In Stock · Free Shipping</div>
+        <div className="sticky-name">{product.name}</div>
+        <div className="sticky-price">
+          ${product.price} · {product.inStock ? 'In Stock' : 'Limited'} · Free Shipping
+        </div>
       </div>
       <div className="sticky-actions">
         <button
@@ -27,7 +31,7 @@ export default function StickyCTA({ onAddToCart, onCartOpen }) {
         <button
           className="btn-primary"
           style={{ padding: '11px 24px', fontSize: '10px' }}
-          onClick={onAddToCart}
+          onClick={() => onAddToCart(product)}
         >
           <span>Add to Bag</span>
         </button>

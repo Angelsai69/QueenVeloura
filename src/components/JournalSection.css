@@ -68,15 +68,16 @@
 }
 .edu-card:hover .edu-img-bg { transform: scale(1.05); }
 
-/* Real photo in card thumbnail */
+/* Real photo in card thumbnail — fully contained, no crop */
 .edu-photo {
   width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;
+  object-position: center center;
+  background: #f5ede6;
   transition: transform 0.5s ease;
   display: block;
 }
-.edu-card:hover .edu-photo { transform: scale(1.05); }
+.edu-card:hover .edu-photo { transform: scale(1.03); }
 
 /* Hero image inside the article overlay */
 .blog-card-hero-img {

@@ -1,30 +1,98 @@
 import { useState, useEffect } from 'react';
 import './AuthModal.css';
 
+const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }) {
-  const [tab, setTab] = useState(defaultTab);
+  const [tab, setTab]       = useState(defaultTab);
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors]   = useState({});
   const [form, setForm] = useState({ email: '', password: '', firstName: '', lastName: '' });
 
-  useEffect(() => {
-    setTab(defaultTab);
-    setSuccess(false);
-  }, [defaultTab, isOpen]);
-
+  useEffect(() => { setTab(defaultTab); setSuccess(false); setErrors({}); }, [defaultTab, isOpen]);
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  const handleSubmit = () => {
-    setSuccess(true);
-    setTimeout(() => { onClose(); setSuccess(false); }, 2200);
+  const update = (field) => (e) => {
+    setForm(f => ({ ...f, [field]: e.target.value }));
+    if (errors[field]) setErrors(er => ({ ...er, [field]: '' }));
   };
 
-  const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
+  const validateSignin = () => {
+    const e = {};
+    if (!emailRx.test(form.email)) e.email = 'Valid email required';
+    if (!form.password.trim()) e.password = 'Password required';
+    return e;
+  };
+
+  const validateJoin = () => {
+    const e = {};
+    if (!form.firstName.trim()) e.firstName = 'Required';
+    if (!emailRx.test(form.email)) e.email = 'Valid email required';
+    if (form.password.length < 8) e.password = 'Min. 8 characters';
+    return e;
+  };
+
+  const handleSubmit = async () => {
+    const errs = tab === 'signin' ? validateSignin() : validateJoin();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+
+    setLoading(true);
+
+    // ── BACKEND HOOKUP POINT ─────────────────────────────────
+    // Sign In:
+    // const res = await fetch('/api/auth/signin', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ email: form.email, password: form.password }),
+    // });
+    // const { token, user } = await res.json();
+    // localStorage.setItem('veloura_token', token);
+    //
+    // Register:
+    // const res = await fetch('/api/auth/register', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ firstName: form.firstName, lastName: form.lastName,
+    //                          email: form.email, password: form.password }),
+    // });
+    //
+    // With Supabase:
+    // import { supabase } from '../lib/supabase'
+    // tab === 'signin'
+    //   ? await supabase.auth.signInWithPassword({ email, password })
+    //   : await supabase.auth.signUp({ email, password, options: { data: { first_name } } })
+    // ─────────────────────────────────────────────────────────
+
+    await new Promise(r => setTimeout(r, 1000)); // remove when backend connected
+    setLoading(false);
+    setSuccess(true);
+    setTimeout(() => { onClose(); setSuccess(false); setForm({ email:'', password:'', firstName:'', lastName:'' }); }, 2200);
+  };
+
+  const handleSocial = (provider) => {
+    // window.location.href = `/api/auth/${provider}`;
+    alert(`${provider} OAuth — connect /api/auth/${provider.toLowerCase()} on your backend`);
+  };
 
   if (!isOpen) return null;
+
+  const Field = ({ id, label, type='text', placeholder, autoComplete }) => (
+    <div className="auth-field">
+      <label className="auth-label">{label}</label>
+      <input
+        className={`auth-input ${errors[id] ? 'invalid' : ''}`}
+        type={type} placeholder={placeholder} autoComplete={autoComplete}
+        value={form[id]} onChange={update(id)}
+        onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+      />
+      {errors[id] && <div className="auth-field-error">{errors[id]}</div>}
+    </div>
+  );
 
   return (
     <div className="auth-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -32,8 +100,8 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }) {
         <button className="auth-close" onClick={onClose} aria-label="Close">×</button>
 
         <div className="auth-tabs">
-          <button className={`auth-tab ${tab === 'signin' ? 'active' : ''}`} onClick={() => { setTab('signin'); setSuccess(false); }}>Sign In</button>
-          <button className={`auth-tab ${tab === 'join' ? 'active' : ''}`} onClick={() => { setTab('join'); setSuccess(false); }}>Join Free</button>
+          <button className={`auth-tab ${tab === 'signin' ? 'active' : ''}`} onClick={() => { setTab('signin'); setSuccess(false); setErrors({}); }}>Sign In</button>
+          <button className={`auth-tab ${tab === 'join' ? 'active' : ''}`} onClick={() => { setTab('join'); setSuccess(false); setErrors({}); }}>Join Free</button>
         </div>
 
         {success ? (
@@ -49,22 +117,18 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }) {
         ) : tab === 'signin' ? (
           <div className="auth-body">
             <div className="auth-title">Welcome back</div>
-            <div className="auth-subtitle">Sign in to your Veloura account to access your orders, wishlist, and exclusive member benefits.</div>
-            <div className="auth-field">
-              <label className="auth-label">Email Address</label>
-              <input className="auth-input" type="email" placeholder="you@example.com" value={form.email} onChange={update('email')} />
-            </div>
-            <div className="auth-field">
-              <label className="auth-label">Password</label>
-              <input className="auth-input" type="password" placeholder="••••••••" value={form.password} onChange={update('password')} />
-            </div>
+            <div className="auth-subtitle">Sign in to access your orders, wishlist, and exclusive member benefits.</div>
+            <Field id="email"    label="Email Address"  type="email"    placeholder="you@example.com"  autoComplete="email" />
+            <Field id="password" label="Password"       type="password" placeholder="••••••••"          autoComplete="current-password" />
             <div className="auth-forgot">
-              <button className="auth-text-btn">Forgot password?</button>
+              <button className="auth-text-btn" onClick={() => { /* /api/auth/forgot-password */ }}>Forgot password?</button>
             </div>
-            <button className="auth-submit" onClick={handleSubmit}><span>Sign In</span></button>
+            <button className="auth-submit" onClick={handleSubmit} disabled={loading}>
+              <span>{loading ? '⟳  Signing in…' : 'Sign In'}</span>
+            </button>
             <div className="auth-divider">or continue with</div>
             <div className="auth-social-btns">
-              <button className="auth-social-btn">
+              <button className="auth-social-btn" onClick={() => handleSocial('Google')}>
                 <svg width="16" height="16" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                   <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -73,7 +137,7 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }) {
                 </svg>
                 Google
               </button>
-              <button className="auth-social-btn">
+              <button className="auth-social-btn" onClick={() => handleSocial('Facebook')}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
@@ -81,37 +145,27 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }) {
               </button>
             </div>
             <div className="auth-switch">
-              Don't have an account? <button className="auth-text-btn" onClick={() => setTab('join')}>Join free →</button>
+              Don't have an account? <button className="auth-text-btn" onClick={() => { setTab('join'); setErrors({}); }}>Join free →</button>
             </div>
           </div>
         ) : (
           <div className="auth-body">
             <div className="auth-title">Join Veloura</div>
-            <div className="auth-subtitle">Create your account for exclusive member pricing, early access to new drops, and a personalised styling experience.</div>
+            <div className="auth-subtitle">Create your account for exclusive member pricing, early access, and a personalised styling experience.</div>
             <div className="auth-name-row">
-              <div className="auth-field">
-                <label className="auth-label">First Name</label>
-                <input className="auth-input" type="text" placeholder="Angela" value={form.firstName} onChange={update('firstName')} />
-              </div>
-              <div className="auth-field">
-                <label className="auth-label">Last Name</label>
-                <input className="auth-input" type="text" placeholder="Mitchell" value={form.lastName} onChange={update('lastName')} />
-              </div>
+              <Field id="firstName" label="First Name" placeholder="Angela"  autoComplete="given-name" />
+              <Field id="lastName"  label="Last Name"  placeholder="Mitchell" autoComplete="family-name" />
             </div>
-            <div className="auth-field">
-              <label className="auth-label">Email Address</label>
-              <input className="auth-input" type="email" placeholder="you@example.com" value={form.email} onChange={update('email')} />
-            </div>
-            <div className="auth-field">
-              <label className="auth-label">Create Password</label>
-              <input className="auth-input" type="password" placeholder="Min. 8 characters" value={form.password} onChange={update('password')} />
-            </div>
-            <button className="auth-submit" onClick={handleSubmit}><span>Create My Account</span></button>
+            <Field id="email"    label="Email Address"  type="email"    placeholder="you@example.com" autoComplete="email" />
+            <Field id="password" label="Create Password" type="password" placeholder="Min. 8 characters" autoComplete="new-password" />
+            <button className="auth-submit" onClick={handleSubmit} disabled={loading}>
+              <span>{loading ? '⟳  Creating account…' : 'Create My Account'}</span>
+            </button>
             <div className="auth-terms">
               By joining you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
             </div>
             <div className="auth-switch">
-              Already have an account? <button className="auth-text-btn" onClick={() => setTab('signin')}>Sign in →</button>
+              Already have an account? <button className="auth-text-btn" onClick={() => { setTab('signin'); setErrors({}); }}>Sign in →</button>
             </div>
           </div>
         )}

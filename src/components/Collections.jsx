@@ -52,7 +52,7 @@ export default function Collections({ onQuizOpen }) {
   }, []);
 
   return (
-    <section className="collections-section" ref={sectionRef}>
+    <section className="collections-section" id="collections-section" ref={sectionRef}>
       <div className="collections-header reveal">
         <div className="section-eyebrow">Curated Collections</div>
         <h2 className="section-title">Wigs Designed for<br /><em>Every Woman</em></h2>
