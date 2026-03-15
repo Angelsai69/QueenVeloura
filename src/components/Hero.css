@@ -23,8 +23,6 @@
   object-fit: cover;
   object-position: center center;
   will-change: transform;
-  /* Scale starts at 1.15 minimum so edges never show */
-  transform: scale(1.15);
 }
 
 /* Incoming slide fades in */
@@ -41,48 +39,51 @@
 @keyframes heroFadeOut { from { opacity: 1; } to { opacity: 0; } }
 
 /* ── Ken Burns pan animations ── */
+/* KEY RULE: translateY NEGATIVE = image moves UP = fills top gap.
+   translateY POSITIVE = image moves DOWN = creates black strip at top.
+   Scale must always be large enough to cover all translated positions. */
 
-/* Slide 1: REVERSED — start on hair (right), pan LEFT to reveal face */
-@keyframes panHairToFace {
-  0%   { transform: scale(1.18) translateX(6%); }
-  100% { transform: scale(1.12) translateX(-4%); }
+/* Slide 1: face → hair — starts on face centre, drifts right to show flowing hair */
+@keyframes panFaceToHair {
+  0%   { transform: scale(1.18) translateX(-3%); }
+  100% { transform: scale(1.12) translateX(6%); }
 }
-.pan-hair-to-face {
-  animation: panHairToFace 6.5s ease-in-out forwards;
+.pan-face-to-hair {
+  animation: panFaceToHair 6.5s ease-in-out forwards;
   transform-origin: center center;
   object-position: center center;
 }
 
-/* Slide 2: pan left to right, anchor top so head never clips */
+/* Slide 2: pan left to right, object anchored top so head stays in frame */
 @keyframes panLeftRight {
-  0%   { transform: scale(1.15) translateX(-4%); }
-  100% { transform: scale(1.12) translateX(5%); }
+  0%   { transform: scale(1.15) translateX(-5%); }
+  100% { transform: scale(1.12) translateX(4%); }
 }
 .pan-left-right {
   animation: panLeftRight 6s ease-in-out forwards;
-  transform-origin: top center;
+  transform-origin: center center;
   object-position: top center;
 }
 
-/* Slide 3: zoom in, push start point UP so no black strip at top */
+/* Slide 3: slow zoom in — NEGATIVE translateY = image pushed UP to fill top gap */
 @keyframes panZoomIn {
-  0%   { transform: scale(1.18) translateY(6%); }
-  100% { transform: scale(1.26) translateY(2%); }
+  0%   { transform: scale(1.25) translateY(-8%); }
+  100% { transform: scale(1.35) translateY(-5%); }
 }
 .pan-zoom-in {
   animation: panZoomIn 6s ease-in-out forwards;
-  transform-origin: top center;
+  transform-origin: center center;
   object-position: top center;
 }
 
-/* Slide 4: zoom out, also start pushed UP */
+/* Slide 4: slow zoom out — also NEGATIVE translateY to fill top */
 @keyframes panZoomOut {
-  0%   { transform: scale(1.22) translateY(5%); }
-  100% { transform: scale(1.14) translateY(2%); }
+  0%   { transform: scale(1.32) translateY(-8%); }
+  100% { transform: scale(1.22) translateY(-5%); }
 }
 .pan-zoom-out {
   animation: panZoomOut 6s ease-in-out forwards;
-  transform-origin: top center;
+  transform-origin: center center;
   object-position: top center;
 }
 
