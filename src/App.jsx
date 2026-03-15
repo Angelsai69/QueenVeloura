@@ -131,6 +131,7 @@ export default function App() {
         onCartOpen={() => setCartOpen(true)}
         onAuthOpen={() => openAuth('signin')}
         onSearchOpen={() => setSearchOpen(true)}
+        onOpenCard={setActiveCard}
         cartCount={cartItems.reduce((s, i) => s + i.qty, 0)}
       />
 
