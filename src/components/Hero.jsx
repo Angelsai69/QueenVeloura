@@ -84,22 +84,20 @@ export default function Hero({ onShopClick }) {
 
         {/* Outgoing slide (fades out) */}
         {prevSlide && (
-          <div className={`hero-photo-layer hero-photo-out`}>
-            <img
-              src={prevSlide.img}
-              alt=""
-              className={`hero-photo-img ${prevSlide.pan}`}
+          <div className="hero-photo-layer hero-photo-out">
+            <div
+              className={`hero-photo-bg ${prevSlide.pan}`}
+              style={{ backgroundImage: `url(${prevSlide.img})` }}
             />
           </div>
         )}
 
-        {/* Incoming slide (fades in + pan animation restarts) */}
+        {/* Incoming — key forces animation restart on every slide change */}
         <div className="hero-photo-layer hero-photo-in">
-          <img
+          <div
             key={current}
-            src={slide.img}
-            alt={slide.headline.join(' ')}
-            className={`hero-photo-img ${slide.pan}`}
+            className={`hero-photo-bg ${slide.pan}`}
+            style={{ backgroundImage: `url(${slide.img})` }}
           />
         </div>
 
