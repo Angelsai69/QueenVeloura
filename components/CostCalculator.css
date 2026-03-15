@@ -1,0 +1,74 @@
+.cpw-section { background: var(--pearl); padding: 100px 60px; }
+.cpw-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+
+.cpw-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 3.5vw, 52px);
+  font-weight: 300; line-height: 1.1; margin-bottom: 20px; color: var(--cocoa);
+}
+.cpw-title em { font-style: italic; font-weight: 700; color: var(--champagne); }
+.cpw-desc { font-size: 13px; line-height: 1.85; color: var(--warm-gray); font-weight: 300; }
+
+.cpw-card {
+  background: var(--silk);
+  border: 1px solid rgba(201,169,110,0.12);
+  padding: 40px;
+}
+.cpw-card-title {
+  font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--champagne); margin-bottom: 32px;
+}
+.cpw-slider-group { margin-bottom: 24px; }
+.cpw-slider-label {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px;
+}
+.cpw-slider-name { font-size: 12px; color: var(--cocoa); font-weight: 500; }
+.cpw-slider-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 700; color: var(--champagne);
+}
+
+.cpw-slider {
+  width: 100%; -webkit-appearance: none; appearance: none;
+  height: 2px; background: rgba(201,169,110,0.2); outline: none;
+  cursor: none;
+}
+.cpw-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%; background: var(--champagne);
+  cursor: none;
+  box-shadow: 0 0 8px rgba(201,169,110,0.4);
+}
+.cpw-slider::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%; background: var(--champagne); border: none;
+}
+
+.cpw-result {
+  margin-top: 32px; padding-top: 28px;
+  border-top: 1px solid rgba(201,169,110,0.12);
+}
+.cpw-result-row {
+  display: flex; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.cpw-result-highlight {
+  display: flex; justify-content: space-between;
+  padding: 14px 16px; margin-bottom: 16px;
+  background: rgba(201,169,110,0.06);
+  border: 1px solid rgba(201,169,110,0.2);
+}
+.cpw-result-label { font-size: 12px; color: var(--warm-gray); align-self: center; }
+.cpw-result-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 700; color: var(--champagne);
+}
+.cpw-comparison { font-size: 12px; line-height: 1.7; color: var(--warm-gray); }
+.cpw-comparison span { color: var(--champagne); font-weight: 500; }
+
+@media (max-width: 900px) {
+  .cpw-inner { grid-template-columns: 1fr; gap: 48px; }
+  .cpw-section { padding: 80px 24px; }
+}
