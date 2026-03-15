@@ -1,0 +1,11 @@
+.announcement {
+  background: var(--cocoa); color: var(--champagne);
+  text-align: center; padding: 11px 20px;
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  font-weight: 300;
+  position: relative; z-index: 101;
+  height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px;
+}
+.announcement span { color: rgba(201,169,110,0.5); }
