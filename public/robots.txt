@@ -1,0 +1,19 @@
+# Queen Veloura — robots.txt
+# https://www.queenveloura.shop
+
+User-agent: *
+Allow: /
+
+# Disallow admin / checkout / account paths
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /account/
+Disallow: /cart/
+Disallow: /api/
+Disallow: /*.json$
+
+# Allow crawling of sitemap
+Sitemap: https://www.queenveloura.shop/sitemap.xml
+
+# Crawl-delay for polite bots
+Crawl-delay: 2
