@@ -19,6 +19,7 @@ const HIDE_DELAY = 5000; // hide after 5s of no interaction
 
 export default function Navbar({ onCartOpen, onAuthOpen, onSearchOpen, onOpenCard, cartCount }) {
   const [scrolled,    setScrolled]    = useState(false);
+  const [atTop,       setAtTop]       = useState(true);
   const [hidden,      setHidden]      = useState(false);
   const [mobileOpen,  setMobileOpen]  = useState(false);
   const hideTimer = useRef(null);
@@ -35,8 +36,10 @@ export default function Navbar({ onCartOpen, onAuthOpen, onSearchOpen, onOpenCar
     resetHideTimer();
 
     const onScroll = () => {
-      setScrolled(window.scrollY > 40);
-      resetHideTimer(); // any scroll resets timer and shows navbar
+      const y = window.scrollY;
+      setScrolled(y > 40);
+      setAtTop(y < 10);
+      resetHideTimer();
     };
 
     const onMouseMove = (e) => {
@@ -70,7 +73,7 @@ export default function Navbar({ onCartOpen, onAuthOpen, onSearchOpen, onOpenCar
 
   return (
     <nav
-      className={`navbar ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''}`}
+      className={`navbar ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''} ${atTop ? 'at-top' : ''}`}
       onMouseEnter={resetHideTimer}
     >
       <a

@@ -51,8 +51,12 @@ export default function ProductCard({ product, onAddToCart, onBISOpen }) {
         <div className="guarantee-badge-inner">2 YR<br />GUAR.</div>
       </div>
 
-      {/* Flip card image */}
-      <div className="product-image">
+      {/* Flip card image — hover flips, click on hint button also works */}
+      <div
+        className="product-image"
+        onMouseEnter={() => setFlipped(true)}
+        onMouseLeave={() => setFlipped(false)}
+      >
         <div className={`flip-inner ${flipped ? 'flipped' : ''}`}>
 
           {/* FRONT */}

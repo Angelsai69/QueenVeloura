@@ -10,7 +10,7 @@ const slides = [
   {
     id: 1,
     img: hero1,
-    pan: 'pan-face-to-hair',
+    pan: 'pan-hair-to-face',
     eyebrow: 'New Arrivals — Spring Collection',
     headline: ['The Art of', 'Natural Hair'],
     sub: 'Handcrafted from 100% virgin human hair. Invisible HD lace. Glueless installation in under 10 minutes.',
@@ -20,7 +20,7 @@ const slides = [
   {
     id: 2,
     img: hero2,
-    pan: 'pan-right-left',
+    pan: 'pan-left-right',
     eyebrow: 'Water Wave · HD Lace',
     headline: ['Effortless.', 'Undeniable.'],
     sub: 'Beachy water wave texture that holds its shape beautifully. Pre-plucked hairline for a seamless, natural finish.',

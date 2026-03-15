@@ -58,8 +58,9 @@
   max-width: 320px;
 }
 .edu-img {
-  aspect-ratio: 4/3; margin-bottom: 24px;
+  aspect-ratio: 1 / 1; margin-bottom: 18px;
   position: relative; overflow: hidden; border-radius: 4px;
+  background: #f5ede6;
 }
 .edu-img-bg {
   width: 100%; height: 100%;
@@ -83,14 +84,18 @@
 .blog-card-hero-img {
   width: calc(100% + 72px);
   margin: -36px -36px 24px -36px;
-  height: 260px;
+  background: #f5ede6;
   overflow: hidden;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .blog-card-hero-img img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: top center;
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain;
   display: block;
 }
 

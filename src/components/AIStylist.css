@@ -1,24 +1,40 @@
+/* AI Stylist pulse + glow animations */
+@keyframes aiFabPulse {
+  0%   { box-shadow: 0 8px 32px rgba(15,8,4,0.35), 0 0 0 0 rgba(201,169,110,0.45); }
+  50%  { box-shadow: 0 8px 32px rgba(15,8,4,0.35), 0 0 0 12px rgba(201,169,110,0.0); }
+  100% { box-shadow: 0 8px 32px rgba(15,8,4,0.35), 0 0 0 0 rgba(201,169,110,0.45); }
+}
+@keyframes aiFabGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(201,169,110,0.3)); }
+  50%       { filter: drop-shadow(0 0 14px rgba(201,169,110,0.7)); }
+}
+
 .ai-fab {
-  position: fixed; bottom: 32px; right: 32px; z-index: 700;
+  position: fixed; bottom: 32px; left: 32px; z-index: 700;
   width: 56px; height: 56px; border-radius: 50%;
   background: linear-gradient(135deg, #1E1510, #3D2C22);
-  border: 1px solid rgba(201,169,110,0.35);
+  border: 1px solid rgba(201,169,110,0.4);
   color: var(--champagne); cursor: none;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 8px 32px rgba(15,8,4,0.35), 0 0 0 0 rgba(201,169,110,0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 32px rgba(15,8,4,0.35);
+  transition: transform 0.3s ease, background 0.3s ease;
+  animation: aiFabPulse 2.8s ease-in-out infinite,
+             aiFabGlow  3.5s ease-in-out infinite;
 }
 .ai-fab:hover {
-  transform: scale(1.08);
-  box-shadow: 0 12px 40px rgba(15,8,4,0.4), 0 0 0 8px rgba(201,169,110,0.08);
+  transform: scale(1.1);
+  animation: none;
+  box-shadow: 0 12px 40px rgba(15,8,4,0.4), 0 0 20px rgba(201,169,110,0.25);
 }
 .ai-fab.ai-fab-open {
   background: var(--cocoa);
-  border-color: rgba(201,169,110,0.5);
+  border-color: rgba(201,169,110,0.6);
+  animation: none;
+  box-shadow: 0 8px 32px rgba(15,8,4,0.4);
 }
 
 .ai-panel {
-  position: fixed; bottom: 100px; right: 32px; z-index: 699;
+  position: fixed; bottom: 100px; left: 32px; z-index: 699;
   width: 340px;
   background: var(--pearl);
   border: 1px solid rgba(201,169,110,0.15);
@@ -154,6 +170,6 @@
 .ai-send:hover { background: var(--gold); }
 
 @media (max-width: 480px) {
-  .ai-fab { bottom: 20px; right: 20px; }
-  .ai-panel { right: 20px; bottom: 90px; width: calc(100vw - 40px); }
+  .ai-fab { bottom: 20px; left: 20px; }
+  .ai-panel { left: 20px; bottom: 90px; width: calc(100vw - 40px); }
 }
